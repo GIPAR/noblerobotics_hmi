@@ -1,9 +1,10 @@
-# NOBLENARA IHM
+# NOBLEGIPAR IHM
 
 Documento tutorial de instalação e utilização da Interface Humano Máquina do repositório "noblegipar-ihm", criada inicialmente para a cadeira de rodas autônoma NARA, sendo posteriormente expandida para a utilização com diferentes projetos e robôs que utilizam o ROS2.
 
 * **Importante!** Leia com atenção durante a instalação
-* O arquivo [Tutorial.md](/docs/Tutorial.md) apresenta as explicações, descrições e tutoriais aprofundadas de algumas funcionalidades da interface
+* O arquivo [Tutorial.md](/docs/Tutoriais/Tutorial.md) apresenta as explicações, descrições e tutoriais aprofundadas de algumas funcionalidades da interface
+* O projeto pode ser instalado via docker, seguindo este [tutorial](/docs/Docker/docker.md)
 
 ## 1 - Pré-requisitos
 
@@ -39,7 +40,7 @@ nvm install 24.11.1 # Apenas funciona se estiver em um novo terminal!
 Baixe o repositório por meio do git clone diretamente do terminal
 
 ```bash
-git clone https://github.com/GIPAR/noblenara-ihm
+git clone https://github.com/GIPAR/noblegipar-ihm
 ```
 
 ### 2.1 - Backend
@@ -63,7 +64,11 @@ cd ~/noblegipar-ihm/frontend && \
 
 ### 2.3 - Hosting (Opcional)
 
-Recomenda-se habilitar o próprio computador para hostear o próprio wifi, enquanto simultaneamente conecta-se com uma rede externa. Para isso, [acesse este arquivo com o passo-a-passo](/docs/ap-manager/ap-manager.md)
+Celulares e tablets que se conectarem externamente normalmente terão o uso do microfone e das câmeras bloqueadas, impossibilitando o uso de algumas funcionalidades importantes para aumentar a acessibilidade do sistema. Portanto, é necessário tornar a conexão do website segura externamente
+
+Primeiramente, é vital hostear o próprio wifi, enquanto simultaneamente conecta-se com uma rede externa. Para isso, [siga este arquivo com o passo-a-passo detalhado](/docs/ap-manager/ap-manager.md). Isso permite algumas configurações necessárias para o processo de certificação
+
+Por fim, também é necessário tornar a conexão segura por meio da certificação do website. Esse processo é alcançado de uma forma simples, como explicado [neste segundo tutorial](/docs/Tutoriais/certificate.md)
 
 ## Inicializando o Website
 
