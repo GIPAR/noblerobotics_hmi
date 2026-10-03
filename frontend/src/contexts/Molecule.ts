@@ -25,3 +25,7 @@ export const SpeedLimitAtom = atom({ linear: 1, angular: 1 })
 
 //Átomos de Log Message : Use "useSetAtom" para apenas modificar o valor mas não causar renderização extra
 export const LogAtom = atom( { msg: '', id: 0, error: false } ) 
+
+// Átomo de controle de voz: só fica true quando o usuário logado é do tipo 'usuario_def'
+export const VozAtivaAtom = atom<boolean>(false)
+ 

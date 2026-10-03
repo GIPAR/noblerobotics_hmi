@@ -37,7 +37,7 @@ export class ROS2Service {
 
         this.ws.onerror = (error) => {				// Event handler: failed connection
           console.error('ROS2 WebSocket error:', error);
-          getDefaultStore().set(LogAtom, {msg: "Falha na conexão com o ROS2!", id: Date.now(), error: true});
+          getDefaultStore().set(LogAtom, {msg: "Falha na conexão com o ROBÔ!", id: Date.now(), error: true});
           reject(error);
         };
 

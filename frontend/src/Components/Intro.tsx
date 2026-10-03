@@ -7,7 +7,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useStore } from 'zustand'
 import { GlobalStore, ROStore } from '../contexts/Store'
 import { useAtom, useSetAtom } from 'jotai';
-import { LogAtom, ShowBatteryAtom } from '../contexts/Molecule'
+import { LogAtom, ShowBatteryAtom, VozAtivaAtom } from '../contexts/Molecule'
 
 const MAX_FACE_ATTEMPTS = 3;
 const FACE_RETRY_DELAY_MS = 4000;
@@ -22,6 +22,7 @@ export const Intro = () => {
   const Battery = useStore(ROStore, (s) => s.batteryData)
   const [ShowBattery, setShowBattery] = useAtom(ShowBatteryAtom)
   const setLogData = useSetAtom(LogAtom)
+  const setVozAtiva = useSetAtom(VozAtivaAtom)
 
   const [isReturning, setIsReturning] = useState(false);      // Flag para detectar retorno
   const [LeaveIntro, setLeaveIntro] = useState(false);        // Flag para detectar saída
@@ -76,17 +77,19 @@ export const Intro = () => {
   // Aplica o resultado de um login bem-sucedido (usado pelo facial e pelo manual)
   const applyLoginSuccess = useCallback((data: any) => {
     const isAdminUser = data.tipo_usuario === 'admin';
+    const isDeficiente = data.tipo_usuario === 'usuario_def';
     faceRecognitionStopped.current = true;
     setFaceStatusMsg(null);
+    setVozAtiva(isDeficiente); // só ativa a leitura em voz para o usuário deficiente
 
     setuserConfig({Login: true, isAdmin: isAdminUser, Intro: true});
     setIsReturning(false);
     setLogData({
-      msg: `Login válido! Bem vindo(a), ${data.username || User.name}`,
+      msg: `Seja bem vindo, ${data.username || User.name}!`,
       id: Date.now(),
       error: false
     });
-  }, [setuserConfig, setLogData, User.name]);
+  }, [setuserConfig, setLogData, setVozAtiva, User.name]);
 
   // Tenta o reconhecimento facial (roda sozinho, sem o usuário clicar em nada)
   const TryFaceLogin = useCallback(async () => {
@@ -113,7 +116,7 @@ export const Intro = () => {
         return;
       }
 
-      // Não reconheceu: mostra aviso, soma tentativa e decide se tenta de novo
+      // Não reconheceu: mostra aviso (visual), soma tentativa e decide se tenta de novo
       setFaceStatusMsg("Reconhecimento facial inválido");
       faceAttemptsRef.current += 1;
       if (faceAttemptsRef.current >= MAX_FACE_ATTEMPTS) {
