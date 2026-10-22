@@ -49,7 +49,7 @@ ip addr add 192.168.4.1/24 dev ap0
 
 # ip link set dev ap0 up
 
-printf "interface=ap0\ndriver=nl80211\nssid=noblegipar\ncountry_code=BR\n\nhw_mode=g\nchannel=${CHANNEL}\n\nwpa=2\nwpa_key_mgmt=WPA-PSK SAE\nieee80211w=1\nsae_password=usergipar\nwpa_passphrase=usergipar\nrsn_pairwise=CCMP\n\nieee80211n=1\nwmm_enabled=1\n\nmacaddr_acl=0\nmax_num_sta=2\nap_isolate=1\n" | tee /etc/hostapd/hostapd.conf
+printf "interface=ap0\ndriver=nl80211\nssid=noblegipar\ncountry_code=BR\n\nhw_mode=g\nchannel=${CHANNEL}\n\nwpa=2\nwpa_key_mgmt=WPA-PSK SAE\nieee80211w=1\nsae_password=usergipar\nwpa_passphrase=usergipar\nrsn_pairwise=CCMP\n\nieee80211n=1\nwmm_enabled=1\n\nmacaddr_acl=0\nmax_num_sta=5\nap_isolate=1\n" | tee /etc/hostapd/hostapd.conf
 
 
 

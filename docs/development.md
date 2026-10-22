@@ -2,16 +2,16 @@
 
 ## Development Notes
 
-### Development
+1. Correções para a utilização de nginx para certificação do frontend+backend+rosbridge
 
-* Front end agora lê o arquivo de certificação encontrado no /home/user/certs (precisa ser adicionado!)
-Changes: vite.config.ts
 
-Pra fazer build
+O nginx fica no computador hosteador e age a frente de todos esses processos; Os processos ficam no localhost comunicando apenas com o nginx
 
-docker build -t noblegipar_dev --build-arg Set_DuckDNS_Token="" .
+## Comandos Docker
 
-docker run -it --privileged --network=host --ipc=host --name=noblegipar-ihm --pid=host --restart=unless-stopped -v /dev:/dev noblegipar-ihm
+docker build -t noblerobotics_dev --build-arg Set_DuckDNS_Token="" .
+
+docker run -it --privileged --network=host --ipc=host --name=noblerobotics_main --pid=host --restart=unless-stopped -v /dev:/dev noblerobotics_dev
 
 OBS: Testar se o entrypoint está funcionando para renovar o certificado
 
@@ -38,9 +38,6 @@ H.264/H.265 via FFMPEG (ffmpeg_image_transport)
     Use case: Best for teleoperation - high frame rate video over WiFi
         'You need the <video tag: It activates the browser's built-in video player engine (hardware acceleration).'
 
-* Certificação do website para não ser um link inseguro quando conectado na rede local
-Importante para o funcionamento dos dispositivos!
-Domínio Robusto para Aplicação: DigitalPlat + Cloudflare
 
 ## Details (ignore)
 
