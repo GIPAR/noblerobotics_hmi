@@ -2,10 +2,7 @@
 
 ## Development Notes
 
-1. Correções para a utilização de nginx para certificação do frontend+backend+rosbridge
-
-
-O nginx fica no computador hosteador e age a frente de todos esses processos; Os processos ficam no localhost comunicando apenas com o nginx
+1. Atualização do README
 
 ## Comandos Docker
 
