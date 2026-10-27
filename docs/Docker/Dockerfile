@@ -12,7 +12,7 @@ ENV DuckDNS_Token=${Set_DuckDNS_Token}
 # Frontend + Backend
 RUN apt-get update && apt-get upgrade -y && \
     apt install -y ros-jazzy-rosbridge-suite ros-jazzy-web-video-server \ 
-        uvicorn pip && \
+        uvicorn pip nginx && \
     pip install --break-system-packages fastapi pymongo python-dotenv python-multipart "numpy<2" && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -36,13 +36,15 @@ RUN apt-get update && \
 
 # ================================================================
 #  FASE 01 — Instalação do Workspace
-RUN git clone https://github.com/GIPAR/noblegipar-ihm && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# RUN git clone https://github.com/GIPAR/noblerobotics_hmi && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /noblerobotics_hmi
+COPY ./noblerobotics_hmi /root/noblerobotics_hmi
 
-RUN cd frontend/ && \
+WORKDIR /root/noblerobotics_hmi
+
+RUN cd frontend && \
     npm install && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -54,9 +56,9 @@ RUN if [ -z "$DuckDNS_Token" ]; then \
         echo "Aviso: Token do DuckDNS não recebido!"; \
     else \
         certbot certonly \
-            --config-dir ~/certs/config \
-            --work-dir ~/certs/work \
-            --logs-dir ~/certs/logs \
+            --config-dir /root/certs/config \
+            --work-dir /root/certs/work \
+            --logs-dir /root/certs/logs \
             --non-interactive --agree-tos --email noblegipar@gmail.com \
             --preferred-challenges dns \
             --authenticator dns-duckdns \
@@ -65,15 +67,19 @@ RUN if [ -z "$DuckDNS_Token" ]; then \
             -d noblegipar.duckdns.org; \
     fi
 
+RUN printf "server {\n    listen 443 ssl;\n    listen [::]:443 ssl;\n    server_name noblegipar.duckdns.org;\n    \n    ssl_certificate     /root/certs/config/live/noblegipar.duckdns.org/fullchain.pem;\n    ssl_certificate_key /root/certs/config/live/noblegipar.duckdns.org/privkey.pem;\n    \n    client_max_body_size 20M;\n    \n    proxy_http_version 1.1;\n    proxy_set_header Upgrade \$http_upgrade;\n    proxy_set_header Connection 'upgrade';\n    proxy_set_header Host \$host;\n    proxy_cache_bypass \$http_upgrade;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | tee /etc/nginx/sites-available/default-https && \
+    ln -s /etc/nginx/sites-available/default-https /etc/nginx/sites-enabled/ && \
+    nginx -s reload
 
 # ================================================================
 #  FASE 03 — Ambiente e Entrypoint
 # .bashrc → garante o ambiente em sessões interativas
+RUN echo 'source /opt/ros/jazzy/setup.bash' >> /root/.bashrc
 RUN echo 'export ROS_DOMAIN_ID=77' >> /root/.bashrc
 
 # entrypoint → garante o ambiente em qualquer situação
-COPY entrypoint.sh /ros.entrypoint.sh
-RUN chmod +x /ros_entrypoint.sh
+COPY entrypoint.sh /main_entrypoint.sh
+RUN chmod +x /main_entrypoint.sh
 
-ENTRYPOINT ["/ros_entrypoint.sh"]
+ENTRYPOINT ["/main_entrypoint.sh"]
 CMD ["/bin/bash"]

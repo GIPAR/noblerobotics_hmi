@@ -10,4 +10,15 @@ O Docker é uma plataforma de código aberto que permite que nós isolemos as de
 
 Assim como na instalação manual, também é necessário preparar o host da interface para hostear o próprio wifi, enquanto simultaneamente conecta-se com uma rede externa. Para isso, [siga este mesmo arquivo com o passo-a-passo detalhado](/docs/ap-manager/ap-manager.md). Isso permite algumas configurações necessárias para o processo de certificação
 
-...
+## Instalando a Imagem
+
+```bash
+cd ~/noblerobotics_hmi/docs/Docker/ && \
+    docker build -t noblerobotics_hmi --build-arg Set_DuckDNS_Token="" .
+```
+
+a
+
+```bash
+docker run -it --privileged --network=host --ipc=host --name=noblerobotics_container --pid=host --restart=unless-stopped -v /dev:/dev noblerobotics_hmi
+```

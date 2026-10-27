@@ -2,15 +2,15 @@
 
 ## Development Notes
 
-1. Atualização do README
+### Development
 
-## Comandos Docker
+1. Modificado Dockerfile
 
-docker build -t noblerobotics_dev --build-arg Set_DuckDNS_Token="" .
+Obs: Falta arrumar bug do nginx no Docker
 
-docker run -it --privileged --network=host --ipc=host --name=noblerobotics_main --pid=host --restart=unless-stopped -v /dev:/dev noblerobotics_dev
+Corrigir bugs!!!!
 
-OBS: Testar se o entrypoint está funcionando para renovar o certificado
+1. Conexão com as cameras está considerando como insegura, ver essa bomba dps
 
 ## Planos Atuais
 
