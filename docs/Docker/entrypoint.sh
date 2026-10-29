@@ -12,6 +12,9 @@ ros2 run rosbridge_server rosbridge_websocket || echo "Ocorreu um erro no rosbri
 ros2 run web_video_server web_video_server || echo "Ocorreu um erro no processo do web_video_server" &
 ros2 run rosapi rosapi_node || echo "Ocorreu um erro rosapi_node" &
 
+echo "Inicializando o Nginx..."
+nginx ||  echo "Falha na inicilização do Nginx"
+
 echo "Inicializando o Backend da Aplicação..."
 cd /root/noblerobotics_hmi/backend && uvicorn main:app --host 0.0.0.0 --port 8000 || echo "Falha grave no Backend" &
 

@@ -4,9 +4,7 @@
 
 ### Development
 
-1. Modificado Dockerfile
-
-Obs: Falta arrumar bug do nginx no Docker
+1. Finalização da arquitetura funcional do Docker - Falta Revisar
 
 Corrigir bugs!!!!
 
@@ -34,7 +32,6 @@ H.264/H.265 via FFMPEG (ffmpeg_image_transport)
     What it is: Video compression using keyframes with predictive frames encoding only differences between frames; Bandwidth: ~1-5 Mbps typical (configurable via bitrate)
     Use case: Best for teleoperation - high frame rate video over WiFi
         'You need the <video tag: It activates the browser's built-in video player engine (hardware acceleration).'
-
 
 ## Details (ignore)
 

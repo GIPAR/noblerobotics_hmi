@@ -36,11 +36,9 @@ RUN apt-get update && \
 
 # ================================================================
 #  FASE 01 — Instalação do Workspace
-# RUN git clone https://github.com/GIPAR/noblerobotics_hmi && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/*
-
-COPY ./noblerobotics_hmi /root/noblerobotics_hmi
+ RUN git clone https://github.com/GIPAR/noblerobotics_hmi && \
+     apt-get clean && \
+     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root/noblerobotics_hmi
 
@@ -53,7 +51,8 @@ RUN cd frontend && \
 # ================================================================
 #  FASE 02 — Preparações Finais
 RUN if [ -z "$DuckDNS_Token" ]; then \
-        echo "Aviso: Token do DuckDNS não recebido!"; \
+        echo "Aviso: Token do DuckDNS não recebido!" && \
+        printf "server {\n    listen 80;\n    listen 127.0.0.1;\n    server_name localhost 127.0.0.1;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | tee /etc/nginx/sites-available/default; \
     else \
         certbot certonly \
             --config-dir /root/certs/config \
@@ -64,12 +63,9 @@ RUN if [ -z "$DuckDNS_Token" ]; then \
             --authenticator dns-duckdns \
             --dns-duckdns-token "$DuckDNS_Token" \
             --dns-duckdns-propagation-seconds 30 \
-            -d noblegipar.duckdns.org; \
+            -d noblegipar.duckdns.org && \
+        printf "server {\n    listen 80;\n    listen 127.0.0.1;\n    server_name localhost 127.0.0.1;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n\nserver {\n    listen 443 ssl;\n    listen [::]:443 ssl;\n    server_name noblegipar.duckdns.org;\n    \n    ssl_certificate     /root/certs/config/live/noblegipar.duckdns.org/fullchain.pem;\n    ssl_certificate_key /root/certs/config/live/noblegipar.duckdns.org/privkey.pem;\n    \n    client_max_body_size 20M;\n    \n    proxy_http_version 1.1;\n    proxy_set_header Upgrade \$http_upgrade;\n    proxy_set_header Connection 'upgrade';\n    proxy_set_header Host \$host;\n    proxy_cache_bypass \$http_upgrade;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | tee /etc/nginx/sites-available/default; \
     fi
-
-RUN printf "server {\n    listen 443 ssl;\n    listen [::]:443 ssl;\n    server_name noblegipar.duckdns.org;\n    \n    ssl_certificate     /root/certs/config/live/noblegipar.duckdns.org/fullchain.pem;\n    ssl_certificate_key /root/certs/config/live/noblegipar.duckdns.org/privkey.pem;\n    \n    client_max_body_size 20M;\n    \n    proxy_http_version 1.1;\n    proxy_set_header Upgrade \$http_upgrade;\n    proxy_set_header Connection 'upgrade';\n    proxy_set_header Host \$host;\n    proxy_cache_bypass \$http_upgrade;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | tee /etc/nginx/sites-available/default-https && \
-    ln -s /etc/nginx/sites-available/default-https /etc/nginx/sites-enabled/ && \
-    nginx -s reload
 
 # ================================================================
 #  FASE 03 — Ambiente e Entrypoint
