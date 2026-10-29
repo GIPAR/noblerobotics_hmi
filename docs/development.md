@@ -4,7 +4,7 @@
 
 ### Development
 
-1. Finalização da arquitetura funcional do Docker - Falta Revisar
+1. Modificação dos Tutoriais de Instalação e Explicação do Projeto
 
 Corrigir bugs!!!!
 

@@ -1,58 +1,12 @@
 # ap-manager
 
-Arquivo passo-a-passo para certificar o website e tornar o computador um ponto de acesso, hosteando o próprio wifi
+Arquivo passo-a-passo para tornar o computador um ponto de acesso, hosteando o próprio wifi
 
-> A certificação do website permite o uso de microfone e outros dispositivos por meio de uma conexão segura (https), sendo recomendado principalmente quando a interface é utilizada via rede
-
-## Certificação
-
-Vamos inicializar pela certificação, baixando os pacotes necessários e preparando as configurações iniciais
-
-``` bash
-sudo apt install python3-pip python3-venv -y && \
-sudo python3 -m venv /opt/certbot/ && \
-sudo /opt/certbot/bin/pip install certbot certbot-dns-duckdns && \
-sudo ln -s /opt/certbot/bin/certbot /usr/bin/certbot
-```
-
-Agora, vamos criar o arquivo de certificação com o certbot instalado. Nota-se que é necessário ter a senha de acesso do website DuckDNS, a qual necessita ser obtida ***contatando os administradores do repositório***
-
-> Com a senha (token) obtida, rode o seguinte comando substituindo a linha "DuckDNS_Token" pela senha de acesso
-
-``` bash
-certbot certonly \
---config-dir ~/certs/config \
-  --work-dir ~/certs/work \
-  --logs-dir ~/certs/logs \
-  --non-interactive --agree-tos --email noblegipar@gmail.com \
-  --preferred-challenges dns \
-  --authenticator dns-duckdns \
-  --dns-duckdns-token DuckDNS_Token \
-  --dns-duckdns-propagation-seconds 30 \
-  -d noblegipar.duckdns.org
-  # Caso não tenha o token, contate os administradores do repositório
-```
-
-Agora criaremos mais um arquivo de configuração da nginx para lidar com as conexões utilizando o certificado
-
-``` bash
-sudo printf "server {\n    listen 443 ssl;\n    listen [::]:443 ssl;\n    server_name noblegipar.duckdns.org;\n    \n    ssl_certificate     $HOME/certs/config/live/noblegipar.duckdns.org/fullchain.pem;\n    ssl_certificate_key $HOME/certs/config/live/noblegipar.duckdns.org/privkey.pem;\n    \n    client_max_body_size 20M;\n    \n    proxy_http_version 1.1;\n    proxy_set_header Upgrade \$http_upgrade;\n    proxy_set_header Connection 'upgrade';\n    proxy_set_header Host \$host;\n    proxy_cache_bypass \$http_upgrade;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | sudo tee /etc/nginx/sites-available/default-https && \
-    sudo ln -s /etc/nginx/sites-available/default-https /etc/nginx/sites-enabled/ && \
-    sudo systemctl reload nginx
-```
-
-Podemos automatizar o processo da renovação da certificação pelo sistema utilizando um serviço e um timer
-
-``` bash
-sudo printf "[Unit]\nDescription=Renova o Certificado - Chamado pelo Timer\n\n[Service]\nType=oneshot\nUser=$(whoami)\nExecStart=/usr/bin/certbot renew --config-dir $HOME/certs/config --work-dir $HOME/certs/work --logs-dir $HOME/certs/logs" | sudo tee /etc/systemd/system/certbot-renew.service && \
-sudo printf "[Unit]\nDescription=Timer para Renovar o Certificado do Website\n\n[Timer]\nOnCalendar=daily\nPersistent=true\n\n[Install]\n\nWantedBy=timers.target" | sudo tee /etc/systemd/system/certbot-renew.timer && \
-sudo systemctl daemon-reload && \
-sudo systemctl enable --now certbot-renew.timer
-```
+> Hostear o próprio wifi permite certificar o website, a qual possibilita o uso de microfone e outros dispositivos por meio de uma conexão segura (https), sendo recomendado principalmente quando a interface é utilizada via rede
 
 ## Ponto de Acesso de Wifi
 
-O último passo para permitir a conexão segura do website é hosteando o próprio wifi. O tutorial está configurado para rodar o Access Point em segundo plano, podendo utilizar a internet de outra rede simultaneamente
+O tutorial está configurado para rodar o Access Point em segundo plano, podendo utilizar a internet de outra rede simultaneamente
 
 ### Dependências Iniciais
 
