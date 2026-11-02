@@ -26,21 +26,20 @@ export const GlobalStore = create<GlobalState>()((set) => ({
 
 
 // Loja 2/2 => Loja ROS
-
 const defaultbatteryConfig = { voltage: 0, percentage: 0, status: 'Desconhecida' }
 const defaultrobotData = {
   project: 'noblenara',
   prefix: '',
 
-  topic_cmd_vel: '/noblenara/alfa/cmd_vel',
-  topic_camera_link: '/noblenara/alfa/camera_link/image',
-  topic_camera_user: '/noblenara/alfa/camera_user',
-  topic_map: '/noblenara/alfa/map',
-  topic_pose: '/noblenara/alfa/pose',
-  topic_goal_pose: '/noblenara/alfa/goal_pose',
-  topic_battery: '/noblenara/alfa/battery_status',
+  topic_cmd_vel: '/noblenara/cmd_vel',
+  topic_camera_link: '/noblenara/camera_link/image',
+  topic_camera_user: '/noblenara/camera_user',
+  topic_map: '/noblenara/map',
+  topic_pose: '/noblenara/pose',
+  topic_goal_pose: '/noblenara/goal_pose',
+  topic_battery: '/noblenara/battery_status',
 
-  frame_map: 'noblenara/alfa/map'
+  frame_map: 'noblenara/map'
 }
 const defaultLink = {
   link: 'http://localhost:8080/stream?topic=/noblenara/camera_link/image&type=mjpeg',
