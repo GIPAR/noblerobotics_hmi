@@ -50,9 +50,12 @@ RUN cd frontend && \
 
 # ================================================================
 #  FASE 02 — Preparações Finais
+COPY /default-https.conf  /tmp/default-https.conf
+COPY /default.conf  /tmp/default.conf
+
 RUN if [ -z "$DuckDNS_Token" ]; then \
         echo "Aviso: Token do DuckDNS não recebido!" && \
-        printf "server {\n    listen 80;\n    listen 127.0.0.1;\n    server_name localhost 127.0.0.1;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | tee /etc/nginx/sites-available/default; \
+        cp /tmp/default.conf /etc/nginx/sites-available/default; \
     else \
         certbot certonly \
             --config-dir /root/certs/config \
@@ -64,14 +67,18 @@ RUN if [ -z "$DuckDNS_Token" ]; then \
             --dns-duckdns-token "$DuckDNS_Token" \
             --dns-duckdns-propagation-seconds 30 \
             -d noblegipar.duckdns.org && \
-        printf "server {\n    listen 80;\n    listen 127.0.0.1;\n    server_name localhost 127.0.0.1;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n\nserver {\n    listen 443 ssl;\n    listen [::]:443 ssl;\n    server_name noblegipar.duckdns.org;\n    \n    ssl_certificate     /root/certs/config/live/noblegipar.duckdns.org/fullchain.pem;\n    ssl_certificate_key /root/certs/config/live/noblegipar.duckdns.org/privkey.pem;\n    \n    client_max_body_size 20M;\n    \n    proxy_http_version 1.1;\n    proxy_set_header Upgrade \$http_upgrade;\n    proxy_set_header Connection 'upgrade';\n    proxy_set_header Host \$host;\n    proxy_cache_bypass \$http_upgrade;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | tee /etc/nginx/sites-available/default; \
-    fi
+        cp /tmp/default-https.conf  /etc/nginx/sites-available/default; \
+    fi && \
+    rm -f /tmp/default.conf /tmp/default-https.conf
 
 # ================================================================
 #  FASE 03 — Ambiente e Entrypoint
 # .bashrc → garante o ambiente em sessões interativas
+COPY fastdds_profile.xml /root/noblerobotics_hmi
+
 RUN echo 'source /opt/ros/jazzy/setup.bash' >> /root/.bashrc
 RUN echo 'export ROS_DOMAIN_ID=77' >> /root/.bashrc
+RUN echo 'export FASTRTPS_DEFAULT_PROFILES_FILE=/root/noblerobotics_hmi/fastdds_profile.xml' >> /root/.bashrc && \
 
 # entrypoint → garante o ambiente em qualquer situação
 COPY entrypoint.sh /main_entrypoint.sh

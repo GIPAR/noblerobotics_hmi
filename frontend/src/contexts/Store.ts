@@ -115,10 +115,11 @@ export const ROStore = create<ROSProps>()((set, get) => ({
   computeLinks: () => {
     const { robotData } = get()
     const hostIP = get().ros.hostIP
+    const camUrl = window.location.protocol === 'https:' ? `https://${window.location.host}` : `http://${hostIP}:8080`;
 
     set({ Link: {
-      link: `http://${hostIP}:8080/stream?topic=${robotData.topic_camera_link}&type=mjpeg`,
-      user: `http://${hostIP}:8080/stream?topic=${robotData.topic_camera_user}&type=mjpeg`
+      link: `${camUrl}/stream?topic=${robotData.topic_camera_link}&type=mjpeg`,
+      user: `${camUrl}/stream?topic=${robotData.topic_camera_user}&type=mjpeg`
     } })
   },
 }))

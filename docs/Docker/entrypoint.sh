@@ -2,6 +2,7 @@
 set -e
 
 source /opt/ros/jazzy/setup.bash
+export FASTRTPS_DEFAULT_PROFILES_FILE=/root/noblerobotics_hmi/fastdds_profile.xml
 export ROS_DOMAIN_ID=77
 
 echo "Inicializando a Renovação da Certificação..."
