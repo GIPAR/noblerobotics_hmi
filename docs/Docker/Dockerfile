@@ -74,11 +74,11 @@ RUN if [ -z "$DuckDNS_Token" ]; then \
 # ================================================================
 #  FASE 03 — Ambiente e Entrypoint
 # .bashrc → garante o ambiente em sessões interativas
-COPY fastdds_profile.xml /root/noblerobotics_hmi
+COPY fastdds_profile.xml /root/noblerobotics_hmi/
 
-RUN echo 'source /opt/ros/jazzy/setup.bash' >> /root/.bashrc
-RUN echo 'export ROS_DOMAIN_ID=77' >> /root/.bashrc
-RUN echo 'export FASTRTPS_DEFAULT_PROFILES_FILE=/root/noblerobotics_hmi/fastdds_profile.xml' >> /root/.bashrc && \
+RUN echo 'source /opt/ros/jazzy/setup.bash' >> /root/.bashrc && \
+    echo 'export FASTRTPS_DEFAULT_PROFILES_FILE=/root/noblerobotics_hmi/fastdds_profile.xml' >> /root/.bashrc && \
+    echo 'export ROS_DOMAIN_ID=77' >> /root/.bashrc
 
 # entrypoint → garante o ambiente em qualquer situação
 COPY entrypoint.sh /main_entrypoint.sh

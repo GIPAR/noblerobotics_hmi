@@ -11,7 +11,7 @@ export const ShowMapAtom = atom(true)
 
 export const ShowBatteryAtom = atom(true)
 
-export const ShowAssistantAtom = atom(true)
+export const ShowAssistantAtom = atom(false)
 
 // Átomos de Configurações;
 export const DashboardAtom = atom({ main: 1, firstside: 2 })

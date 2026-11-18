@@ -4,11 +4,7 @@
 
 ### Development
 
-1. Modificação dos Tutoriais de Instalação e Explicação do Projeto
-
-Corrigir bugs!!!!
-
-1. Conexão com as cameras está considerando como insegura, ver essa bomba dps
+1. Correção de Bugs com conexão entre host e Docker, problema de Shared Memory
 
 ## Planos Atuais
 
