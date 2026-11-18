@@ -36,7 +36,9 @@ RUN apt-get update && \
 
 # ================================================================
 #  FASE 01 — Instalação do Workspace
- RUN git clone https://github.com/GIPAR/noblerobotics_hmi && \
+WORKDIR /root/
+
+RUN git clone https://github.com/GIPAR/noblerobotics_hmi && \
      apt-get clean && \
      rm -rf /var/lib/apt/lists/*
 

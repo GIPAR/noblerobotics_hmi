@@ -71,7 +71,7 @@ cd ~/noblerobotics_hmi/frontend && \
 O website consta com um intermediário de conexões do cliente denominado nginx, ele é utilizado para integrar tanto o uso via rede e o uso local com configurações avançadas. A utilização do nginx não é opcional, mas apenas é necessário esse único comando para seu funciomento
 
 ```bash
-sudo printf "server {\n    listen 80;\n    listen 127.0.0.1;\n    server_name localhost 127.0.0.1;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}" | sudo tee /etc/nginx/sites-available/default && \
+sudo cp ~/noblerobotics_hmi/docs/docker/default.conf /etc/nginx/sites-available/default && \
     sudo systemctl reload nginx
 ```
 
@@ -112,11 +112,10 @@ certbot certonly \
   # Caso não tenha o token, contate os administradores do repositório
 ```
 
-Agora criaremos mais um arquivo de configuração da nginx para lidar com as conexões utilizando o certificado
+Agora modificaremos o arquivo de configuração da nginx para lidar com as conexões https utilizando o certificado
 
 ``` bash
-sudo printf "server {\n    listen 443 ssl;\n    listen [::]:443 ssl;\n    server_name noblegipar.duckdns.org;\n    \n    ssl_certificate     $HOME/certs/config/live/noblegipar.duckdns.org/fullchain.pem;\n    ssl_certificate_key $HOME/certs/config/live/noblegipar.duckdns.org/privkey.pem;\n    \n    client_max_body_size 20M;\n    \n    proxy_http_version 1.1;\n    proxy_set_header Upgrade \$http_upgrade;\n    proxy_set_header Connection 'upgrade';\n    proxy_set_header Host \$host;\n    proxy_cache_bypass \$http_upgrade;\n\n    location / {\n        proxy_pass http://127.0.0.1:5173;\n    }\n    \n    location /api/ {\n        proxy_pass http://127.0.0.1:8000;\n    }\n    \n    location /rosbridge {\n        proxy_pass http://127.0.0.1:9090/;\n        proxy_read_timeout 1h;\n        proxy_send_timeout 1h;\n    }\n}\n" | sudo tee /etc/nginx/sites-available/default-https && \
-    sudo ln -s /etc/nginx/sites-available/default-https /etc/nginx/sites-enabled/ && \
+sudo cp ~/noblerobotics_hmi/docs/docker/default-https.conf /etc/nginx/sites-available/default && \
     sudo systemctl reload nginx
 ```
 
