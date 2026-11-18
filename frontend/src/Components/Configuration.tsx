@@ -148,21 +148,42 @@ export const ConfigurationMenu = () => {
 
             <div className='configuration-box'>
               <div className='configuration-box-button' onClick={() => { setrobotData({ ...robotData, project: 'noblenara', prefix: 'alfa' }); compute(); computeLinks(); setLogData({msg: "'noblenara' selecionado!", id: Date.now(), error: false});} }> </div>
-              <div className='configuration-box-text'> NOBLENARA </div>
+              <div className='configuration-box-text'> noblenara </div>
             </div>
 
             <div className='configuration-box'>
-              <div className='configuration-box-button' onClick={ () => { setrobotData({ ...robotData, project: 'RoboticsLLM', prefix: 'narinha' }); compute(); computeLinks(); setLogData({msg: "'NARINHA' Selecionado!", id: Date.now(), error: false});} }> </div>
-              <div className='configuration-box-text'> NARINHA </div>
+              <div className='configuration-box-button' onClick={() => { setrobotData({ ...robotData, project: 'noblecamaro', prefix: '' }); compute(); computeLinks(); setLogData({msg: "'noblecamaro' selecionado!", id: Date.now(), error: false});} }> </div>
+              <div className='configuration-box-text'> noblecamaro </div>
             </div>
 
             <div className='configuration-box'>
+              <div className='configuration-box-button' onClick={ () => { setrobotData({ ...robotData, project: 'RoboticsLLM', prefix: 'narinha' }); compute(); computeLinks(); setLogData({msg: "'RoboticsLLm' Selecionado!", id: Date.now(), error: false});} }> </div>
+              <div className='configuration-box-text'> roboticsLLM </div>
+            </div>
+
+            {/* <div className='configuration-box'>
               <div className='configuration-box-button' onClick={() => { setrobotData({ ...robotData, project: 'RoboticsLLM', prefix: 'gipzinho' }); compute(); computeLinks(); setLogData({msg: "'GIPZINHO' selecionado!", id: Date.now(), error: false}); }}> </div>
               <div className='configuration-box-text'> GIPZINHO </div>
-            </div>
+            </div> */}
 
             <div className='configuration-header'>
               <h1>Configurações do Robô</h1>
+            </div>
+
+            <div className='configuration-header borderless'>
+              <h2>Projeto</h2>
+            </div>
+
+            <div className='configuration-box input'>
+              <input type="text" placeholder="Namespace do Robô" value={robotData.project}
+                onChange={(e) => {
+                    setrobotData({ ...robotData, project: e.target.value })
+                    compute();
+                    computeLinks();
+                }
+                }
+                className="configuration-box-input"
+              />
             </div>
 
             <div className='configuration-header borderless'>
