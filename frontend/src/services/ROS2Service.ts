@@ -13,11 +13,11 @@ export class ROS2Service {
   private ws: WebSocket | null = null;
   private listeners: { [topic: string]: ((message: unknown) => void)[] } = {};
   private unexpectedDisconnect: boolean | null = null;
+
   public hostIP = window.location.hostname;
+  private wsUrl = window.location.protocol === 'https:' ? `wss://${window.location.host}/rosbridge` : `ws://${this.hostIP}:9090`;
 
-
-  // Métodos Principais
-  connect(url: string = `ws://${this.hostIP}:9090`): Promise<boolean> {
+  connect(url: string = `${this.wsUrl}`): Promise<boolean> {
     return new Promise((resolve, reject) => {
 
       if(ROStore.getState().isConnected){ 
