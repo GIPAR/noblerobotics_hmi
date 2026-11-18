@@ -3,8 +3,8 @@
 Documento tutorial de instalação e utilização da Interface Humano Máquina do repositório "noblerobotics_hmi", criada inicialmente para a cadeira de rodas autônoma NARA, sendo posteriormente expandida para a utilização com diferentes projetos e robôs que utilizam o ROS2.
 
 * **Importante!** Leia com atenção durante a instalação
-* O arquivo [Tutorial.md](/docs/Tutoriais/Tutorial.md) apresenta as explicações, descrições e tutoriais aprofundadas de algumas funcionalidades da interface
-* O projeto pode ser instalado via docker, seguindo este [tutorial](/docs/Docker/docker.md)
+* O arquivo [Tutorial.md](/docs/tutoriais/Tutorial.md) apresenta as explicações, descrições e tutoriais aprofundadas de algumas funcionalidades da interface
+* O projeto pode ser instalado via docker, seguindo este [tutorial](/docs/docker/docker.md)
 
 ## 1 - Pré-requisitos
 
