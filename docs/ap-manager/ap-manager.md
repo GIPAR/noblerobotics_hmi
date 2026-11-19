@@ -22,7 +22,7 @@ sudo systemctl mask hostapd
 Posteriormente, é necessário verificar se o driver de wifi suporta a configuração AP + Client, por meio dos seguintes comandos
 
 ``` bash
-iw list | grep -A 15 "valid interface combinations" # Verifique se aparece conjuntamente "#{managed} ... {AP, ...}" em uma mesma linha, que implica o suporte da configuração simultanea de AP + Client
+iw list | grep -A 15 "valid interface combinations" # Verifique se aparece conjuntamente "#{managed} ... {AP, ...}" em uma mesma linha, que implica o suporte da configuração simultânea de AP + Client
 ```
 
 > Caso não tenha a combinação descrita, não há possibilidade de hostear o próprio wifi
@@ -32,7 +32,7 @@ iw list | grep -A 15 "valid interface combinations" # Verifique se aparece conju
 Verificando que existe o suporte do driver, precisamos saber qual o nome da interface do dispositivo de rede do seu computador. Simplesmente rode o seguinte comando
 
 ``` bash
-iw dev # Veja á direita da palavra "Interface" como por exemplo: Interface wlp4s0
+iw dev # Veja à direita da palavra "Interface" como por exemplo: Interface wlp4s0
 ```
 
 Vamos rodar um pequeno script para atualizar os nossos códigos com o nome da interface: substitua "wlp4s0" pelo nome verificado anteriormente

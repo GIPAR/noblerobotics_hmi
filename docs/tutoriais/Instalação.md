@@ -1,9 +1,8 @@
 # Tutorial de Instalação Manual
 
-Documento tutorial de instalação e utilização da Interface Humano Máquina do repositório "noblerobotics_hmi", criada inicialmente para a cadeira de rodas autônoma NARA, sendo posteriormente expandida para a utilização com diferentes projetos e robôs que utilizam o ROS2.
+Documento tutorial de instalação manual e utilização da Interface Humano Máquina do repositório "noblerobotics_hmi".
 
 * **Importante!** Leia com atenção durante a instalação
-* O arquivo [Tutorial.md](/docs/tutoriais/Tutorial.md) apresenta as explicações, descrições e tutoriais aprofundadas de algumas funcionalidades da interface
 * O projeto pode ser instalado via docker, seguindo este [tutorial](/docs/docker/docker.md)
 
 ## 1 - Pré-requisitos
@@ -13,7 +12,7 @@ Documento tutorial de instalação e utilização da Interface Humano Máquina d
 * Ubuntu 24.04
 * ROS2 Jazzy
 
-A instalação do ROS2 é necessária para a devida comunicação com os robôs, portanto, instale o ROS2 Jazzy pelo seguinte tutorial oficial [clickando aqui](https://docs.ros.org/en/jazzy/Installation.html). Contudo, espera-se que a maioria das funcionalidades da interface funcione em qualquer versão do ROS2
+A instalação do ROS2 é necessária para a devida comunicação com os robôs, portanto, instale o ROS2 Jazzy pelo seguinte tutorial oficial [clicando aqui](https://docs.ros.org/en/jazzy/Installation.html). Contudo, espera-se que a maioria das funcionalidades da interface funcione em qualquer versão do ROS2
 
 ### 1.1 - Instalando Dependências Iniciais
 
@@ -47,7 +46,7 @@ A Backend em si não precisa de preparação prévia para o método de login pad
 
 > Para logar pelo método comum isso não é necessário! Apenas quando é desejável utilizar o reconhecimento facial. Nota-se que o seu rosto também deve estar cadastrado na nuvem
 
-Com a senha de acesso (credenciais) adquiridas, mova-se para a pasta do backend e rode o segundo comando modificando a linha "coloque_as_credenciais_aqui" pela senha. Ela salva as credenciais no projeto para que o Backend possa interpretá-la.
+Com a senha de acesso (credenciais) adquiridas, mova-se para a pasta do backend e rode o seguinte comando modificando a linha "coloque_as_credenciais_aqui" pela senha. Ela salva as credenciais no projeto para que o Backend possa interpretá-la.
 
 ```bash
 # Verifique se o caminho está correto 
@@ -68,7 +67,7 @@ cd ~/noblerobotics_hmi/frontend && \
 
 ### 2.3 - Configurando o Website
 
-O website consta com um intermediário de conexões do cliente denominado nginx, ele é utilizado para integrar tanto o uso via rede e o uso local com configurações avançadas. A utilização do nginx não é opcional, mas apenas é necessário esse único comando para seu funciomento
+O website conta com um intermediário de conexões do cliente denominado nginx, ele é utilizado para integrar tanto o uso via rede e o uso local com configurações avançadas. A utilização do nginx não é opcional, mas apenas é necessário esse único comando para seu funcionamento
 
 ```bash
 sudo cp ~/noblerobotics_hmi/docs/docker/default.conf /etc/nginx/sites-available/default && \
@@ -77,9 +76,10 @@ sudo cp ~/noblerobotics_hmi/docs/docker/default.conf /etc/nginx/sites-available/
 
 O comando anterior configura as conexões do website tanto localmente quanto via rede, especificamente para conexões http
 
-#### Hosting e Certificação (Recomendado)
+### 2.4 - Hosting e Certificação (Recomendado)
 
-Recomenda-se fazer um passo-a-passo para hostear o próprio wifi e certificar o website. O tutorial específico para hosteamento pode ser acessado por meio [desse arquivo com o passo-a-passo detalhado](/docs/ap-manager/ap-manager.md)
+Recomenda-se fazer um passo-a-passo para hostear o próprio wifi e certificar o website. 
+O tutorial específico para hosteamento pode ser acessado por meio [desse arquivo com o passo-a-passo detalhado](/docs/ap-manager/ap-manager.md)
 
 #### Certificação
 
@@ -132,7 +132,7 @@ sudo systemctl enable --now certbot-renew.timer
 
 ### Inicializando o backend e a frontend
 
-Com a preparação completa, precisa-se de apenas duas etapas para rodar a interface. Inicalize primeiramente o backend
+Com a preparação completa, precisa-se de apenas duas etapas para rodar a interface. Inicialize primeiramente o backend
 
 ```bash
 cd ~/noblerobotics_hmi/backend && \
