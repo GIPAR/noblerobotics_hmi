@@ -115,7 +115,8 @@ certbot certonly \
 Agora modificaremos o arquivo de configuração da nginx para lidar com as conexões https utilizando o certificado
 
 ``` bash
-sudo cp ~/noblerobotics_hmi/docs/docker/default-https.conf /etc/nginx/sites-available/default && \
+sed "s|/root/certs|$HOME/certs|g" ~/noblerobotics_hmi/docs/docker/default-https.conf > /tmp/default-https.conf && \
+sudo mv /tmp/default-https.conf /etc/nginx/sites-available/default && \
     sudo systemctl reload nginx
 ```
 
