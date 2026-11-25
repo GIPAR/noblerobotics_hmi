@@ -4,7 +4,7 @@ import './Configuration.css'
 import { useStore } from 'zustand'
 import { GlobalStore, ROStore } from '../contexts/Store'
 import { useAtom, useSetAtom } from 'jotai'
-import { LogAtom, ShowMenuAtom, ShowTeleopAtom, ShowRosapiAtom, ThemeAtom, ShowMapAtom, SpeedLimitAtom, ShowAssistantAtom, ShowBatteryAtom } from '../contexts/Molecule'
+import { LogAtom, ShowMenuAtom, ShowTeleopAtom, ShowRosapiAtom, ThemeAtom, ShowMapAtom, ShowAssistantAtom, ShowBatteryAtom, SectionsAtom } from '../contexts/Molecule'
 
 export const ConfigurationMenu = () => {
     const [ConfigOption, setConfigOption] = useState(1)
@@ -12,22 +12,28 @@ export const ConfigurationMenu = () => {
     const ros = useStore(ROStore, (s) => s.ros)
     const isConnected = useStore(ROStore, (s) => s.isConnected)
     const userConfig = useStore(GlobalStore, (s) => s.userConfig)
-    const robotData = useStore(ROStore, (state) => state.robotData)
-    const Link = useStore(ROStore, (state) => state.Link)
     const logout = useStore(GlobalStore, (state) => state.logout)
-    const setrobotData = useStore(ROStore, (state) => state.setrobotData)
-    const setLink = useStore(ROStore, (state) => state.setLink)
     const compute = useStore(ROStore, (state) => state.computeTopics)
-    const computeLinks = useStore(ROStore, (state) => state.computeLinks)
     const [ShowMenu, setShowMenu]= useAtom(ShowMenuAtom)
+    
     const [ShowRosapi, setShowRosapi] = useAtom(ShowRosapiAtom)
     const [StartTeleop, setStartTeleop] = useAtom(ShowTeleopAtom)
     const [Theme, setTheme] = useAtom(ThemeAtom)
     const [ShowMap, setShowMap] = useAtom(ShowMapAtom)
     const [ShowAssistant, setShowAssistant] = useAtom(ShowAssistantAtom)
-    const [MaxSpeed, setMaxSpeed] = useAtom(SpeedLimitAtom)
     const [ShowBattery, setShowBattery] = useAtom(ShowBatteryAtom)
+    const setSections = useSetAtom(SectionsAtom)
     const setLogData = useSetAtom(LogAtom)
+
+    const [currentRobot, setcurrentRobot] = useState<string>("default")
+    const robots = useStore(ROStore, (state) => state.robots)
+    const addrobot = useStore(ROStore, (state) => state.addrobot)
+    const updaterobots = useStore(ROStore, (state) => state.updaterobots)
+    const removerobot = useStore(ROStore, (state) => state.removerobot)
+    const robotData = useStore(ROStore, (state) => state.robotData)
+    const setrobotData = useStore(ROStore, (state) => state.setrobotData)
+    const [AltSections, setAltSections] = useState<string>("")
+    const [AltnewRobot, setAltnewRobot] = useState<string>("")
 
     useEffect(() => {
         if(isConnected === false){
@@ -83,6 +89,29 @@ export const ConfigurationMenu = () => {
               <div className='configuration-box-button' onClick={ros.stopRobot}> </div>
               <div className='configuration-box-text'> Parar Robô </div>
             </div>
+
+            <div className='configuration-header'>
+              <h1>Opções de Visualização</h1>
+            </div>
+
+            <div className='configuration-box'>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="0"
+                value={AltSections}
+                onChange={(e) => {
+                  setAltSections(e.target.value.replace(/\D/g, ""));
+                  if(Number(e.target.value) >= 1){
+                    setSections(Number(e.target.value))
+                  }
+                }}
+                className="configuration-box-select"
+              />
+              <div className='configuration-box-text'> Número de Seções </div>
+            </div>
+            
             </>
             : null}
 
@@ -140,65 +169,94 @@ export const ConfigurationMenu = () => {
             : null}
 
 
+
             {ConfigOption === 4 && userConfig.isAdmin === true ?
             <>
             <div className='configuration-header'>
-              <h1>Opções de Projeto</h1>
+              <h1>Cadastramento de Robôs</h1>
             </div>
 
-            <div className='configuration-box'>
-              <div className='configuration-box-button' onClick={() => { setrobotData({ ...robotData, project: 'noblenara', prefix: 'alfa' }); compute(); computeLinks(); setLogData({msg: "'noblenara' selecionado!", id: Date.now(), error: false});} }> </div>
-              <div className='configuration-box-text'> noblenara </div>
+            <div className='configuration-header borderless'>
+              <h2>Robô Selecionado: {currentRobot}</h2>
             </div>
 
-            <div className='configuration-box'>
-              <div className='configuration-box-button' onClick={() => { setrobotData({ ...robotData, project: 'noblecamaro', prefix: '' }); compute(); computeLinks(); setLogData({msg: "'noblecamaro' selecionado!", id: Date.now(), error: false});} }> </div>
-              <div className='configuration-box-text'> noblecamaro </div>
+            {/* [id, data] */}
+            {Object.entries(robots).map(([id]) => (
+              <>
+                <div className='configuration-box reduced'>
+                  <div className='configuration-box-list'> {id} </div>
+
+                  <div className='configuration-box-list'>
+                    <div className='configuration-box-list-icon' 
+                      onClick={() => {
+                        updaterobots( robotData, currentRobot )
+                        setcurrentRobot(id);
+                        setLogData({msg: `Robô ${id} selecionado!`, id: Date.now(), error: false}); 
+                      }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="#14cf88" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm12-88a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,128Zm-88,0a12,12,0,1,1-12-12A12,12,0,0,1,96,128Z"></path></svg>
+                    </div>
+                    <div className='configuration-box-list-icon' 
+                      onClick={() => {
+                        if(Object.keys(robots)[1] !== undefined){
+
+                          if(currentRobot === id && Object.keys(robots)[0] !== currentRobot){ 
+                            setcurrentRobot(Object.keys(robots)[0])
+                          }
+                          else { setcurrentRobot(Object.keys(robots)[1]) };
+                          removerobot(id);
+                          setLogData({msg: `Robô ${id} removido!`, id: Date.now(), error: false});
+
+                        }
+                        else { setLogData({msg: `Não é possível remover o único robô da lista!`, id: Date.now(), error: true}); }
+                      }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="#14cf88" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ))}
+
+            <div className='configuration-box reduced'>
+                <input type="text" placeholder="Adicionar novo Robô" value={ AltnewRobot }
+                  onChange={(e) => { setAltnewRobot( e.target.value ) }}
+                  onKeyDown={(e) => { if(  e.key === "Enter" ){ addrobot( AltnewRobot ); setAltnewRobot("") } }}
+                  className="configuration-box-list input"
+                />
+
+                <div className='configuration-box-list' onClick={() => { addrobot( AltnewRobot ); setAltnewRobot("") }}>
+                  <div className='configuration-box-list-icon'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#14cf88" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm48-88a8,8,0,0,1-8,8H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32A8,8,0,0,1,176,128Z"></path></svg>
+                  </div>
+                </div>
             </div>
 
-            <div className='configuration-box'>
-              <div className='configuration-box-button' onClick={ () => { setrobotData({ ...robotData, project: 'RoboticsLLM', prefix: 'narinha' }); compute(); computeLinks(); setLogData({msg: "'RoboticsLLm' Selecionado!", id: Date.now(), error: false});} }> </div>
-              <div className='configuration-box-text'> roboticsLLM </div>
-            </div>
-
-            {/* <div className='configuration-box'>
-              <div className='configuration-box-button' onClick={() => { setrobotData({ ...robotData, project: 'RoboticsLLM', prefix: 'gipzinho' }); compute(); computeLinks(); setLogData({msg: "'GIPZINHO' selecionado!", id: Date.now(), error: false}); }}> </div>
-              <div className='configuration-box-text'> GIPZINHO </div>
-            </div> */}
+            {/* Se pa adicionar método para adicionar algum tópico adicional de câmera  */}
 
             <div className='configuration-header'>
               <h1>Configurações do Robô</h1>
             </div>
 
-            <div className='configuration-header borderless'>
-              <h2>Projeto</h2>
-            </div>
-
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Namespace do Robô" value={robotData.project}
+            <div className='configuration-box reduced'>
+              <div className='configuration-box-list h2'> <h2>Projeto:</h2> </div>
+              <input className="configuration-box-list input2" type="text" 
+                placeholder="Namespace do Robô" value={robotData.project}
                 onChange={(e) => {
                     setrobotData({ ...robotData, project: e.target.value })
                     compute();
-                    computeLinks();
-                }
-                }
-                className="configuration-box-input"
+                }}
+                
               />
             </div>
 
-            <div className='configuration-header borderless'>
-              <h2>Prefixo</h2>
-            </div>
-
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Namespace do Robô" value={robotData.prefix}
+            <div className='configuration-box reduced'>
+              <div className='configuration-box-list h2'> <h2>Prefixo:</h2> </div>
+              <input className="configuration-box-list input2" type="text" 
+                placeholder="Namespace" value={robotData.prefix}
                 onChange={(e) => {
                     setrobotData({ ...robotData, prefix: e.target.value })
                     compute();
-                    computeLinks();
-                }
-                }
-                className="configuration-box-input"
+                }}
+                
               />
             </div>
 
@@ -206,70 +264,61 @@ export const ConfigurationMenu = () => {
               <h2>Tópicos</h2>
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico do cmd_vel" value={robotData.topic_cmd_vel}
-                onChange={(e) => setrobotData({ ...robotData, topic_cmd_vel: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Comando de Velocidade: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Namespace" value={robotData.topic_cmd_vel}
+                onChange={(e) => {
+                    setrobotData({ ...robotData, topic_cmd_vel: e.target.value })
+                }} 
               />
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico da Câmera Link" value={robotData.topic_camera_link}
-                onChange={(e) => setrobotData({ ...robotData, topic_camera_link: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Câmera Principal: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Tópico da Câmera Link" value={robotData.topic_camera_link}
+                onChange={(e) => { setrobotData({ ...robotData, topic_camera_link: e.target.value }) }}
               />
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico da Câmera User" value={robotData.topic_camera_user}
-                onChange={(e) => setrobotData({ ...robotData, topic_camera_user: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Câmera Secundária: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Tópico da Câmera Secundária" value={robotData.topic_camera_user}
+                onChange={(e) => { setrobotData({ ...robotData, topic_camera_user: e.target.value }) }}
               />
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico da Bateria" value={ robotData.topic_battery }
-                onChange={(e) => setrobotData({ ...robotData, topic_battery: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Tópico da Bateria: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Tópico da Bateria" value={robotData.topic_battery}
+                onChange={(e) => { setrobotData({ ...robotData, topic_battery: e.target.value }) }}
               />
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico do Mapa SLAM" value={ robotData.topic_map }
-                onChange={(e) => setrobotData({ ...robotData, topic_map: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Tópico do Mapa: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Tópico do Mapa SLAM" value={robotData.topic_map}
+                onChange={(e) => { setrobotData({ ...robotData, topic_map: e.target.value }) }}
               />
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico da Posição" value={ robotData.topic_pose }
-                onChange={(e) => setrobotData({ ...robotData, topic_pose: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Tópico da Localização: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Tópico da Posição" value={robotData.topic_pose}
+                onChange={(e) => { setrobotData({ ...robotData, topic_pose: e.target.value }) }}
               />
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Tópico do Comando de Nav2" value={ robotData.topic_goal_pose }
-                onChange={(e) => setrobotData({ ...robotData, topic_goal_pose: e.target.value })}
-                className="configuration-box-input"
-              />
-            </div>
-
-            <div className='configuration-header borderless'>
-              <h2>Endereço das Câmeras</h2>
-            </div>
-
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Endereço da Câmera Link" value={ Link.link }
-                onChange={(e) => setLink({ ...Link, link: e.target.value })}
-                className="configuration-box-input"
-              />
-            </div>
-
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Endereço da Câmera User" value={ Link.user }
-                onChange={(e) => setLink({ ...Link, user: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Navegação Autônoma: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Tópico do Comando de Nav2" value={robotData.topic_goal_pose}
+                onChange={(e) => { setrobotData({ ...robotData, topic_goal_pose: e.target.value }) }}
               />
             </div>
 
@@ -277,10 +326,11 @@ export const ConfigurationMenu = () => {
               <h2>Frames</h2>
             </div>
 
-            <div className='configuration-box input'>
-              <input type="text" placeholder="Frame do Mapa" value={ robotData.frame_map }
-                onChange={(e) => setrobotData({ ...robotData, frame_map: e.target.value })}
-                className="configuration-box-input"
+            <div className='configuration-box topics'>
+              <div className='configuration-box-list h3'> Frame do Mapa: </div>
+              <input className="configuration-box-list input3" type="text" 
+                placeholder="Frame do Mapa" value={robotData.frame_map}
+                onChange={(e) => { setrobotData({ ...robotData, frame_map: e.target.value }) }}
               />
             </div>
             </>

@@ -41,10 +41,8 @@ const defaultrobotData = {
 
   frame_map: 'noblenara/map'
 }
-const defaultLink = {
-  link: 'http://localhost:8080/stream?topic=/noblenara/camera_link/image&type=mjpeg',
-  user: 'http://localhost:8080/stream?topic=/noblenara/camera_user&type=mjpeg'
-}
+
+type RobotData = typeof defaultrobotData
 
 interface ROSProps {
   isConnected: boolean
@@ -55,14 +53,18 @@ interface ROSProps {
   setrosapiData: ( newState: Record<string, string | string[] | number | boolean>, ) => void
   batteryData: typeof defaultbatteryConfig
   setbatteryData: ( newconfig: typeof defaultbatteryConfig ) => void
+
+  robots: Record<string, RobotData>
+  // current: string
   robotData: typeof defaultrobotData
   setrobotData: ( newData: typeof defaultrobotData ) => void
 
-  Link: typeof defaultLink
-  setLink: ( newLink: typeof defaultLink ) => void
+  addrobot: (id: string) => void
+  updaterobots: ( newData: typeof defaultrobotData, id: string ) => void
+  removerobot: (id: string) => void
   
   computeTopics: () => void
-  computeLinks: () => void
+  ConvertTopic: ( topic: string ) => string
 }
 
 export const ROStore = create<ROSProps>()((set, get) => ({
@@ -73,13 +75,23 @@ export const ROStore = create<ROSProps>()((set, get) => ({
   rosapiData: {} as Record<string, string | string[] | number | boolean>,
   setrosapiData: ( newState: Record<string, string | string[] | number | boolean>) => set({ rosapiData: newState }),
   batteryData: defaultbatteryConfig,
-
   setbatteryData: ( newconfig ) => set({ batteryData: newconfig }),
+
+  robots: { default: { ...defaultrobotData } },
+  // current: "default",
   robotData: defaultrobotData,
   setrobotData: ( newData ) => set({ robotData: newData }),
 
-  Link: defaultLink,
-  setLink: ( newLink ) => set({ Link: newLink }),
+  addrobot: (id) => set((s) => ({ robots: { ...s.robots, [id]: { ...defaultrobotData } } })),
+  removerobot: (id) => { const rest = { ...get().robots }; delete rest[id]; set({ robots: rest }) },
+  // updaterobots: ( newData, id ) => {  },
+
+  updaterobots: ( newData, id ) => {
+    const robots = { ...get().robots }
+    set({ ...robots, [id]: newData })
+  },
+
+  
 
   computeTopics: () => {
     const { robotData } = get()
@@ -112,22 +124,17 @@ export const ROStore = create<ROSProps>()((set, get) => ({
     }
   },
 
-  computeLinks: () => {
-    const { robotData } = get()
+  ConvertTopic: (topic) => {
     const hostIP = get().ros.hostIP
-    const camUrl = window.location.protocol === 'https:' ? `https://${window.location.host}` : `http://${hostIP}:8080`;
-
-    set({ Link: {
-      link: `${camUrl}/stream?topic=${robotData.topic_camera_link}&type=mjpeg`,
-      user: `${camUrl}/stream?topic=${robotData.topic_camera_user}&type=mjpeg`
-    } })
+    const camUrl = window.location.protocol === 'https:' ? `https://${window.location.host}/stream?topic=${topic}&type=mjpeg` : `http://${hostIP}:8080/stream?topic=${topic}&type=mjpeg`;
+    // first: `${camUrl}/stream?topic=${topic}&type=mjpeg`
+    return camUrl;
   },
 }))
 
 
 
 // Loja 3/3 => Loja chatBot
-
 interface Message {
   role: "user" | "assistant";
   content: string;

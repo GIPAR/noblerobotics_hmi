@@ -7,8 +7,8 @@ import { RosapiMenu } from '../Rosapi'
 import { Map } from '../Map'
 
 
-export const SwitchCode = ({which}: {which: number}) => {
-    const CameraURL = useStore(ROStore, (s) => s.Link)
+export const SwitchCode = ({ topic, which }: { topic: string, which: number }) => {
+    const convert = useStore(ROStore, (s) => s.ConvertTopic)
     const setLogData = useSetAtom(LogAtom)
     const cameraLoadedRef = useRef<{ main: boolean | null; minor: boolean | null }>({  main: null,  minor: null });
 
@@ -16,7 +16,7 @@ export const SwitchCode = ({which}: {which: number}) => {
         <>
         {which === 1 ? (
             <>
-            <img src={CameraURL.link}
+            <img src={ convert(topic) }
                 onError={() => {
                     if(cameraLoadedRef.current.main !== false){
                         cameraLoadedRef.current.main = false;}
@@ -30,7 +30,7 @@ export const SwitchCode = ({which}: {which: number}) => {
 
         {which === 2 ? (
             <>
-                <img src={CameraURL.user}
+                <img src={ convert(topic) }
                 onError={() => {
                     if(cameraLoadedRef.current.minor !== false){
                         cameraLoadedRef.current.minor = false;}
@@ -48,6 +48,7 @@ export const SwitchCode = ({which}: {which: number}) => {
             </>
         ) : (null) }
 
+        {/* Adicionar método para reutilizar o mapa em diferentes tópicos em várias instâncias */}
         {which === 4 ? (
             <>
                 <Map/>

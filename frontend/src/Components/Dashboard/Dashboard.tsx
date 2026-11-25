@@ -2,8 +2,8 @@ import { SwitchCode } from './SwitchCode';
 import { useStore } from 'zustand';
 import { GlobalStore, ROStore } from '../../contexts/Store';
 import { useAtom } from 'jotai'
-import { DashboardAtom, BatteryAtom, ShowTeleopAtom, ShowRosapiAtom, ShowMapAtom, ShowBatteryAtom } from '../../contexts/Molecule';
-import { useState } from 'react';
+import { DashboardAtom, BatteryAtom, ShowTeleopAtom, ShowRosapiAtom, ShowMapAtom, ShowBatteryAtom, SectionsAtom, TopicsAtom } from '../../contexts/Molecule';
+import { useState, useEffect, useRef } from 'react';
 import { Teleoperation } from '../../services/TeleopService';
 import { BatteryView } from '../Battery';
 import './Dashboard.css'
@@ -12,14 +12,21 @@ export const Dashboard = () => {
     const [isFull, setisFull] = useState(false)
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+    const robots = useStore(ROStore, (s) => s.robots)
     const isConnected = useStore(ROStore, (s) => s.isConnected)
     const userConfig = useStore(GlobalStore, (s) => s.userConfig)
     const [Selection, setSelection] = useAtom(DashboardAtom)
+    const [Sections] = useAtom(SectionsAtom)
     const [StartTeleop] = useAtom(ShowTeleopAtom)
     const [ShowRosapi] = useAtom(ShowRosapiAtom)
     const [ShowMap] = useAtom(ShowMapAtom)
     const [isExpanded] = useAtom(BatteryAtom)
     const [ShowBattery] = useAtom(ShowBatteryAtom)
+
+    const [Topics, setTopics] = useAtom(TopicsAtom)
+    const keys = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"] as const;
+    const [keysConf, setkeysConf] = useState({ first: false, second: false, third: false, fourth: false, fifth: false, sixth: false, seventh: false, eighth: false, ninth: false })
+    const gridRef = useRef<HTMLDivElement>(null);              // Referência para a div principal
 
     // Develop: Ver se á outra maneira para selecionar se vai mudar o "main" ou o "firstside", tentei guardar uma string e jogar dentro do set mas não funcionou, porém talvez errei a sintaxe
 
@@ -36,11 +43,68 @@ export const Dashboard = () => {
         }
     }
 
+    useEffect(() => {
+        if(!gridRef.current){ return }
+
+        if( Sections === 1 ){
+            gridRef.current.style.setProperty('--main-grid', "1fr");
+        }
+        else if( Sections === 2){
+            gridRef.current.style.setProperty('--main-grid', "1fr 1fr");
+        }
+        else if( Sections >= 3 ){
+            gridRef.current.style.setProperty('--main-grid', "1fr 1fr 1fr");
+        }
+    }, [Sections]);
+    
+
     return (
         <div className='Dashboard' style={{ '--side-grid' : isFull ? '0fr' : '1fr'} as React.CSSProperties}>
 
-            <div className='Dashboard-main'>
-                <SwitchCode which={Selection.main}/>
+            <div className='Dashboard-main' ref={gridRef}>
+
+                {keys.slice(0, Sections).map((key) => (
+                    <div className='Dashboard-main-container' key={key}>
+                        <SwitchCode topic={Topics[key].topic} which={Topics[key].which} />
+
+                        <div className='Dashboard-icon configuration'
+                            onClick={() => { setkeysConf({ ...keysConf, [key]: !keysConf[key] }) }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#15c8ce9d" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"></path></svg>
+                        </div>
+
+                        {keysConf[key] ? (
+                            <div className='Dashboard-configuration'>
+                                <div className='Dashboard-configuration-types'>
+                                    <div className='Dashboard-configuration-types-button left' onClick={() => { setTopics({ ...Topics, [key]: {which: 1, topic: robots.topic_camera_link} }) }}>
+                                        {"<"}
+                                    </div>
+                                    <div className='Dashboard-configuration-types-button right' onClick={() => { setTopics({ ...Topics, ...[key], [key]: {which: 4} }) }}>
+                                        {">"}
+                                    </div>
+
+                                    {Topics[key].which === 1 ? ("Câmera Principal") : (null)}
+                                    {Topics[key].which === 2 ? ("Câmera Secundária") : (null)}
+                                    {Topics[key].which === 3 ? ("Ativar Menu rosapi") : (null)}
+                                    {Topics[key].which === 4 ? ("Visualização do Mapa") : (null)}
+                                </div>
+
+                                <input type="text" placeholder="Tópico" value={ Topics[key].topic }
+                                    onChange={(e) => setTopics({ ...Topics, [key]: { ...[key], topic: e.target.value } })}
+                                    className="Dashboard-configuration-input"
+                                />
+                            </div>
+                        ): null}
+
+                        
+
+                        {/* <div className='Dashboard-configuration'>
+                            <div className='Dashboard-configuration-input'> Tópico  </div>
+                            
+                            <div className='Dashboard-configuration-selection' onClick={() => { setisFull(!isFull) }}> Tipo </div>
+                        </div> */}
+                    </div>
+                ))}
+
                 <div className='Dashboard-icon select'
                     onClick={() => { setisFull(!isFull) }}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="#38bd9c" viewBox="0 0 256 256"><path d="M216,48V96a8,8,0,0,1-16,0V67.31l-42.34,42.35a8,8,0,0,1-11.32-11.32L188.69,56H160a8,8,0,0,1,0-16h48A8,8,0,0,1,216,48ZM98.34,146.34,56,188.69V160a8,8,0,0,0-16,0v48a8,8,0,0,0,8,8H96a8,8,0,0,0,0-16H67.31l42.35-42.34a8,8,0,0,0-11.32-11.32ZM208,152a8,8,0,0,0-8,8v28.69l-42.34-42.35a8,8,0,0,0-11.32,11.32L188.69,200H160a8,8,0,0,0,0,16h48a8,8,0,0,0,8-8V160A8,8,0,0,0,208,152ZM67.31,56H96a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V96a8,8,0,0,0,16,0V67.31l42.34,42.35a8,8,0,0,0,11.32-11.32Z"></path></svg>
@@ -60,7 +124,7 @@ export const Dashboard = () => {
                 </div>
 
                 <div className='Dashboard-side-container'>
-                    <SwitchCode which={Selection.firstside}/>
+                    <SwitchCode topic={""} which={Selection.firstside}/>
                     <div className='Dashboard-icon select'
                         onClick={() => {
                             if(Selection.main === 1){setSelection({main: 2, firstside: 1} )}
@@ -74,11 +138,11 @@ export const Dashboard = () => {
                     </div>
                 </div>
                 
-                {ShowRosapi === true ? <div className='Dashboard-side-container'> <SwitchCode which={3}/> </div> : null}
+                {ShowRosapi === true ? <div className='Dashboard-side-container'> <SwitchCode topic={""} which={3}/> </div> : null}
 
                 {ShowMap === true && userConfig.isAdmin === true ?
                 <div className='Dashboard-side-container'>
-                    <SwitchCode which={4}/>
+                    <SwitchCode topic={""} which={4}/>
                 </div>
                 : null}
             </div>

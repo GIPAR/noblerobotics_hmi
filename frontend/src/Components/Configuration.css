@@ -97,6 +97,10 @@
   font-size: clamp(0.5rem, 5.8cqi + 5.5cqh, 1rem);
   color: rgb(0, 103, 163);
 }
+.configuration-header h3 {
+  font-size: clamp(0.5rem, 3cqi + 3cqh, 1rem);
+  color: rgb(0, 103, 163);
+}
 
 .configuration-box {
   width: calc(var(--box-width) * 0.8);
@@ -105,6 +109,45 @@
   container-type: size;
   flex-shrink: 0;
 }
+.configuration-box.topics { width: calc(var(--box-width) * 0.9); }
+.configuration-box.reduced { width: calc(var(--box-width) * 0.6); }
+.configuration-box-list { 
+  width: 50%;
+  height: 100%;
+  border: 1px solid rgb(11, 139, 199);
+  border-radius: 1rem;
+  border-left: none; border-right: none; border-top: none; border-bottom: none;
+  display: flex; align-items: center; justify-content: center;
+  color: rgb(19, 143, 162);
+  font-size: clamp(0.4rem, 8cqi + 8cqh, 1rem);
+  font-weight: bold;
+  overflow: scroll;
+  white-space: nowrap;
+  outline: none;
+  gap: 8%;
+}
+.configuration-box-list.input {
+  background-color: rgba(187, 187, 187, 0);
+  border: 1px solid rgb(2, 152, 134);
+  text-align: center;
+  font-size: clamp(0.4rem, 3.5cqi + 3.5cqh, 1rem);
+}
+.configuration-box-list.input2 {
+  background-color: rgba(187, 187, 187, 0);
+  border: 1px solid rgb(2, 152, 134);
+  text-align: center;
+  font-size: clamp(0.6rem, 7cqi + 5cqh, 1rem);
+}
+.configuration-box-list.input3 {
+  background-color: rgba(187, 187, 187, 0);
+  border: 1px solid rgb(2, 152, 134);
+  text-align: center;
+  font-size: clamp(0.4rem, 3.2cqi + 3cqh, 1rem);
+}
+.configuration-box-list-icon { width: 3vh; height: 3vh; cursor: pointer; }
+.configuration-box-list-icon.select { border-radius: 5rem; }
+.configuration-box-list.h2 { font-size: clamp(0.5rem, 5.8cqi + 5.5cqh, 1rem); color: rgb(0, 103, 163); }
+.configuration-box-list.h3 { font-size: clamp(0.5rem, 4cqi + 3cqh, 1rem); color: rgb(0, 103, 163); }
 .configuration-box.input { justify-content: center; }
 .configuration-box-button {
   position: fixed;
@@ -117,6 +160,18 @@
 }
 .configuration-box-button.active {
   background: rgb(62, 158, 163);
+}
+.configuration-box-select {
+  position: absolute;
+  width: 3.0vh;
+  height: 3.0vh;
+  border: 1px solid rgb(2, 152, 134); border-top: none; border-bottom: none;
+  border-radius: 0.3rem;
+  color: rgb(19, 143, 162);
+  outline: none;
+  text-align: center;
+  z-index: 1;
+  cursor: pointer;
 }
 .configuration-box-text {
   position: relative;
@@ -137,5 +192,5 @@
   color: rgb(11, 87, 99);
   border-color: rgb(17, 180, 180);
   text-align: center;
-  font-size: clamp(0.4rem, 3.5cqi + 3.5cqh, 1rem);;
+  font-size: clamp(0.4rem, 3.5cqi + 3.5cqh, 1rem);
 }

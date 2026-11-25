@@ -16,6 +16,10 @@ export const ShowAssistantAtom = atom(false)
 // Átomos de Configurações;
 export const DashboardAtom = atom({ main: 1, firstside: 2 })
 
+export const TopicsAtom = atom({ first: {topic: "", which: 1}, second: {topic: "", which: 1}, third: {topic: "", which: 1}, fourth: {topic: "", which: 1}, fifth: {topic: "", which: 1}, sixth: {topic: "", which: 1}, seventh: {topic: "", which: 1}, eighth: {topic: "", which: 1}, ninth: {topic: "", which: 1} })
+
+export const SectionsAtom = atom(1)
+
 export const ThemeAtom = atom('light')
 
 export const BatteryAtom = atom(false) // Átomo para lógica da informação da bateria
