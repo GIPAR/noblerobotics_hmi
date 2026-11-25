@@ -2,7 +2,7 @@ import { useState } from "react";
 import { askGemini } from "../services/LLMService";
 import { speechService } from "../services/SpeechService";
 import { useStore } from "zustand";
-import { ChatStore, ROStore } from "../contexts/Store";
+import { ChatStore } from "../contexts/Store";
 import "./Chat.css";
 
 export default function Chat() {

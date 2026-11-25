@@ -16,7 +16,6 @@ function App() {
   const userConfig = useStore(GlobalStore, (s) => s.userConfig)
   const isConnected = useStore(ROStore, (s) => s.isConnected)
   const ros = useStore(ROStore, (s) => s.ros)
-  const robotData = useStore(ROStore, (state) => state.robotData)
   const [Theme] = useAtom(ThemeAtom)
   const [ShowAssistant] = useAtom(ShowAssistantAtom)
 
@@ -49,8 +48,7 @@ function App() {
         {ShowAssistant ? <Chat /> : null}
 
         <div className='App-header'> <h1>
-          {robotData.project === "noblenara" ? ( "NARA - Robot HMI" ):( null )}
-          {robotData.project === "RoboticsLLM" ? ( "RoboticsLLM - HMI" ):( null )}
+          noblerobotics_hmi
         </h1></div>
 
         <ConfigurationMenu/>

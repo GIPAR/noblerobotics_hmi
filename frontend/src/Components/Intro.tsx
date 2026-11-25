@@ -132,7 +132,7 @@ export const Intro = () => {
         setFaceStatusMsg(null);
       }
     }
-  }, [applyLoginSuccess]);
+  }, [applyLoginSuccess, faceUrl]);
 
   // Dispara as tentativas de reconhecimento facial automaticamente ao carregar a tela
   useEffect(() => {
@@ -186,7 +186,7 @@ export const Intro = () => {
       console.error(error);
       setLogData({msg: "Erro de conexão com o servidor", id: Date.now(), error: true});
     }
-  }, [User, applyLoginSuccess, setLogData]);
+  }, [User, applyLoginSuccess, setLogData, loginUrl]);
 
   useEffect(() => {
     if (userConfig.Login === true){return}

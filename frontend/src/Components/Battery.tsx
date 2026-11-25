@@ -47,7 +47,7 @@ export const BatteryView = () => {
         return() => {
             Battery_sub.unsubscribe();
         };
-        }, [isConnected, ros, setMessage, project]);
+        }, [isConnected, ros, setMessage, project, battery_topic]);
 
 
         useEffect(() => {

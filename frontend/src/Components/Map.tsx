@@ -48,10 +48,10 @@ export const Map = () => {
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
 
-        let OriginPixels = { x: 0, y: 0};
-        let CommandPixels = { x: 0, y: 0};
-        let rotationCommand = { degrees: 0 };
-        let robotCommand = { header: { frame_id: frame_map }, pose: { position: { x: 0, y: 0, z: 0 }, orientation: { z: 0, w: 0 } } }
+        const OriginPixels = { x: 0, y: 0};
+        const CommandPixels = { x: 0, y: 0};
+        const rotationCommand = { degrees: 0 };
+        const robotCommand = { header: { frame_id: frame_map }, pose: { position: { x: 0, y: 0, z: 0 }, orientation: { z: 0, w: 0 } } }
 
         OriginPixels.x = (info.origin.position.x / info.resolution);
         OriginPixels.y = -(info.origin.position.y / info.resolution);
@@ -78,8 +78,8 @@ export const Map = () => {
         const canvas = canvasRef.current;
         if(!info || !nav || !canvas) return;
 
-        let OriginPixels = { x: 0, y: 0};
-        let pixelsMove = { x: 0, y: 0};
+        const OriginPixels = { x: 0, y: 0};
+        const pixelsMove = { x: 0, y: 0};
         let rotation = 0;
 
         OriginPixels.x = info.width + (info.origin.position.x / info.resolution);

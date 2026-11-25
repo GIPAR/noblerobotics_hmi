@@ -6,6 +6,12 @@
 
 1. Correção de Bugs com conexão entre host e Docker, problema de Shared Memory
 
+Planejamento:
+
+--- Cada seção tão somente segura um tópico apenas, o tópico será salvo em uma lista
+
+--- Cada seção irá salvar qual o tópico especifico de um robô configurado anteriormente específico
+
 ## Planos Atuais
 
 * Adição de Funcionalidades:
