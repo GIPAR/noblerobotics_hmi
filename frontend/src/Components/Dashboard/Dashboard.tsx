@@ -68,7 +68,6 @@ export const Dashboard = () => {
                 {keys.slice(0, Sections).map((key) => (
                     <div className='Dashboard-main-container' key={key}>
                         {sRobot[key].robot === "" ? null : <SwitchCode robot={sRobot[key].robot} which={sRobot[key].which} /> }
-                        
 
                         <div className='Dashboard-icon configuration'
                             onClick={() => { setcurrentSection(key); setkeysConf({ ...keysConf, [key]: !keysConf[key] }) }}>

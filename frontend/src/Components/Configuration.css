@@ -126,6 +126,7 @@
   outline: none;
   gap: 8%;
 }
+.configuration-box-list.tools { overflow: visible; }
 .configuration-box-list.input {
   background-color: rgba(187, 187, 187, 0);
   border: 1px solid rgb(2, 152, 134);
@@ -144,7 +145,8 @@
   text-align: center;
   font-size: clamp(0.4rem, 3.2cqi + 3cqh, 1rem);
 }
-.configuration-box-list-icon { width: 3vh; height: 3vh; cursor: pointer; }
+/* .configuration-box-list-icon { width: 3vh; height: 3vh; cursor: pointer; } */
+.configuration-box-list-icon { width: clamp(0.6rem, 12cqi + 12cqh, 2rem); height: clamp(0.6rem, 12cqi + 12cqh, 2rem); cursor: pointer; overflow: visible; }
 .configuration-box-list-icon.select { border-radius: 5rem; }
 .configuration-box-list.h2 { font-size: clamp(0.5rem, 5.8cqi + 5.5cqh, 1rem); color: rgb(0, 103, 163); }
 .configuration-box-list.h3 { font-size: clamp(0.5rem, 4cqi + 3cqh, 1rem); color: rgb(0, 103, 163); }

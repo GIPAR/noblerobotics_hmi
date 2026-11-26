@@ -55,7 +55,8 @@ interface ROSProps {
   setbatteryData: ( newconfig: typeof defaultbatteryConfig ) => void
 
   robots: Record<string, RobotData>
-  // current: string
+  currentrobot: string
+  setcurrentRobot: (id: string) => void
   robotData: typeof defaultrobotData
   setrobotData: ( newData: typeof defaultrobotData ) => void
 
@@ -78,7 +79,8 @@ export const ROStore = create<ROSProps>()((set, get) => ({
   setbatteryData: ( newconfig ) => set({ batteryData: newconfig }),
 
   robots: { default: { ...defaultrobotData } },
-  // current: "default",
+  currentrobot: "default",
+  setcurrentRobot: ( id ) => set({ currentrobot: id }),
   robotData: defaultrobotData,
   setrobotData: ( newData ) => set({ robotData: newData }),
 

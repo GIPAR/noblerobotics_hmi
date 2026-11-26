@@ -12,6 +12,7 @@ export const SwitchCode = ({ robot, which }: { robot: string, which: number }) =
     const convert = useStore(ROStore, (s) => s.ConvertTopic)
     const setLogData = useSetAtom(LogAtom)
     const cameraLoadedRef = useRef<{ main: boolean | null; minor: boolean | null }>({  main: null,  minor: null });
+    if (!robotData) return null
 
     return (
         <>
