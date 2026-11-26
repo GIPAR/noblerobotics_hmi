@@ -4,7 +4,7 @@ import './Configuration.css'
 import { useStore } from 'zustand'
 import { GlobalStore, ROStore } from '../contexts/Store'
 import { useAtom, useSetAtom } from 'jotai'
-import { LogAtom, ShowMenuAtom, ShowTeleopAtom, ShowRosapiAtom, ThemeAtom, ShowMapAtom, ShowAssistantAtom, ShowBatteryAtom, SectionsAtom } from '../contexts/Molecule'
+import { LogAtom, ShowMenuAtom, ShowTeleopAtom, ShowRosapiAtom, ThemeAtom, ShowMapAtom, ShowAssistantAtom, ShowBatteryAtom, SectionsAtom, currentSectionAtom } from '../contexts/Molecule'
 
 export const ConfigurationMenu = () => {
     const [ConfigOption, setConfigOption] = useState(1)
@@ -25,8 +25,10 @@ export const ConfigurationMenu = () => {
     const setSections = useSetAtom(SectionsAtom)
     const setLogData = useSetAtom(LogAtom)
 
-    const [currentRobot, setcurrentRobot] = useState<string>("default")
+    const [currentSection] = useAtom(currentSectionAtom)
+    
     const robots = useStore(ROStore, (state) => state.robots)
+    const [currentRobot, setcurrentRobot] = useState<string>("default")
     const addrobot = useStore(ROStore, (state) => state.addrobot)
     const updaterobots = useStore(ROStore, (state) => state.updaterobots)
     const removerobot = useStore(ROStore, (state) => state.removerobot)
@@ -57,6 +59,35 @@ export const ConfigurationMenu = () => {
             {ConfigOption === 1 ?
             <>
             <div className='configuration-header'>
+              <h1>Opções de Visualização</h1>
+            </div>
+
+            <div className='configuration-box'>
+              <div className={`configuration-box-button ${ShowAssistant ? 'active' : ''}`} onClick={() => setShowAssistant(!ShowAssistant)}> </div>
+              <div className='configuration-box-text'> {ShowAssistant ? 'Desativar Assistente' : 'Ativar Assistente'} </div>
+            </div>
+
+            <div className='configuration-box'>
+              <div className={`configuration-box-button ${ShowBattery ? 'active' : ''}`} onClick={() => setShowBattery(!ShowBattery)}> </div>
+              <div className='configuration-box-text'> {ShowBattery ? 'Esconder Visualização da Carga' : 'Visualização da Carga'} </div>
+            </div>
+
+            <div className='configuration-box'>
+              <input className="configuration-box-select"
+                type="text" inputMode="numeric"
+                pattern="[0-9]*" placeholder="0"
+                value={AltSections}
+                onChange={(e) => {
+                  setAltSections(e.target.value.replace(/\D/g, ""));
+                  if(Number(e.target.value) >= 1){
+                    setSections(Number(e.target.value))
+                  }
+                }}          
+              />
+              <div className='configuration-box-text'> Número de Seções </div>
+            </div>
+
+            <div className='configuration-header'>
               <h1>Opções de Conexão</h1>
             </div>
 
@@ -75,6 +106,56 @@ export const ConfigurationMenu = () => {
                 logout(); setShowMenu(false); setShowRosapi(false); setLogData({msg: "Retornado a tela Inicial", id: Date.now(), error: false}); }}> </div>
               <div className='configuration-box-text'> Deslogar </div>
             </div>
+            
+            </>
+            : null}
+
+
+
+            {ConfigOption === 2 ?
+            <>
+            <div className='configuration-header'>
+              <h1>Configurações da Sessão</h1>
+            </div>
+
+            <div className='configuration-header borderless'>
+              <h2>Sessão Selecionada: {currentSection}</h2>
+            </div>
+
+            {Object.entries(robots).map(([id]) => (
+              <>
+                <div className='configuration-box reduced'>
+                  <div className='configuration-box-list'> {id} </div>
+
+                  <div className='configuration-box-list'>
+                    <div className='configuration-box-list-icon' 
+                      onClick={() => {
+                        updaterobots( robotData, currentRobot )
+                        setcurrentRobot(id);
+                        setLogData({msg: `Robô ${id} selecionado!`, id: Date.now(), error: false}); 
+                      }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="#14cf88" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm12-88a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,128Zm-88,0a12,12,0,1,1-12-12A12,12,0,0,1,96,128Z"></path></svg>
+                    </div>
+                    <div className='configuration-box-list-icon' 
+                      onClick={() => {
+                        if(Object.keys(robots)[1] !== undefined){
+
+                          if(currentRobot === id && Object.keys(robots)[0] !== currentRobot){ 
+                            setcurrentRobot(Object.keys(robots)[0])
+                          }
+                          else { setcurrentRobot(Object.keys(robots)[1]) };
+                          removerobot(id);
+                          setLogData({msg: `Robô ${id} removido!`, id: Date.now(), error: false});
+
+                        }
+                        else { setLogData({msg: `Não é possível remover o único robô da lista!`, id: Date.now(), error: true}); }
+                      }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="#14cf88" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ))}
 
             <div className='configuration-header'>
               <h1>Opções do Robô</h1>
@@ -90,48 +171,7 @@ export const ConfigurationMenu = () => {
               <div className='configuration-box-text'> Parar Robô </div>
             </div>
 
-            <div className='configuration-header'>
-              <h1>Opções de Visualização</h1>
-            </div>
-
-            <div className='configuration-box'>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
-                value={AltSections}
-                onChange={(e) => {
-                  setAltSections(e.target.value.replace(/\D/g, ""));
-                  if(Number(e.target.value) >= 1){
-                    setSections(Number(e.target.value))
-                  }
-                }}
-                className="configuration-box-select"
-              />
-              <div className='configuration-box-text'> Número de Seções </div>
-            </div>
             
-            </>
-            : null}
-
-
-
-            {ConfigOption === 2 ?
-            <>
-            <div className='configuration-header'>
-              <h1>Ferramentas Gerais</h1>
-            </div>
-
-            <div className='configuration-box'>
-              <div className={`configuration-box-button ${ShowAssistant ? 'active' : ''}`} onClick={() => setShowAssistant(!ShowAssistant)}> </div>
-              <div className='configuration-box-text'> {ShowAssistant ? 'Desativar Assistente' : 'Ativar Assistente'} </div>
-            </div>
-
-            <div className='configuration-box'>
-              <div className={`configuration-box-button ${ShowBattery ? 'active' : ''}`} onClick={() => setShowBattery(!ShowBattery)}> </div>
-              <div className='configuration-box-text'> {ShowBattery ? 'Esconder Visualização da Carga' : 'Visualização da Carga'} </div>
-            </div>
 
             <div className='configuration-header'>
               <h1>Ferramentas do ROS2</h1>

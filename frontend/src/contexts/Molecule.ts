@@ -16,9 +16,11 @@ export const ShowAssistantAtom = atom(false)
 // Átomos de Configurações;
 export const DashboardAtom = atom({ main: 1, firstside: 2 })
 
-export const TopicsAtom = atom({ first: {topic: "", which: 1}, second: {topic: "", which: 1}, third: {topic: "", which: 1}, fourth: {topic: "", which: 1}, fifth: {topic: "", which: 1}, sixth: {topic: "", which: 1}, seventh: {topic: "", which: 1}, eighth: {topic: "", which: 1}, ninth: {topic: "", which: 1} })
+export const RobotsAtom = atom({ first: {robot: "default", which: 1}, second: {robot: "", which: 1}, third: {robot: "", which: 1}, fourth: {robot: "", which: 1}, fifth: {robot: "", which: 1}, sixth: {robot: "", which: 1}, seventh: {robot: "", which: 1}, eighth: {robot: "", which: 1}, ninth: {robot: "", which: 1} })
 
 export const SectionsAtom = atom(1)
+
+export const currentSectionAtom = atom("first")
 
 export const ThemeAtom = atom('light')
 

@@ -84,12 +84,7 @@ export const ROStore = create<ROSProps>()((set, get) => ({
 
   addrobot: (id) => set((s) => ({ robots: { ...s.robots, [id]: { ...defaultrobotData } } })),
   removerobot: (id) => { const rest = { ...get().robots }; delete rest[id]; set({ robots: rest }) },
-  // updaterobots: ( newData, id ) => {  },
-
-  updaterobots: ( newData, id ) => {
-    const robots = { ...get().robots }
-    set({ ...robots, [id]: newData })
-  },
+  updaterobots: ( newData, id ) => { const robots = { ...get().robots }; set({ ...robots, [id]: newData }) },
 
   
 

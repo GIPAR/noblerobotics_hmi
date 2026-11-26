@@ -7,7 +7,8 @@ import { RosapiMenu } from '../Rosapi'
 import { Map } from '../Map'
 
 
-export const SwitchCode = ({ topic, which }: { topic: string, which: number }) => {
+export const SwitchCode = ({ robot, which }: { robot: string, which: number }) => {
+    const robotData = useStore(ROStore, (s) => s.robots[robot])
     const convert = useStore(ROStore, (s) => s.ConvertTopic)
     const setLogData = useSetAtom(LogAtom)
     const cameraLoadedRef = useRef<{ main: boolean | null; minor: boolean | null }>({  main: null,  minor: null });
@@ -16,7 +17,7 @@ export const SwitchCode = ({ topic, which }: { topic: string, which: number }) =
         <>
         {which === 1 ? (
             <>
-            <img src={ convert(topic) }
+            <img src={ convert(robotData.topic_camera_link) }
                 onError={() => {
                     if(cameraLoadedRef.current.main !== false){
                         cameraLoadedRef.current.main = false;}
@@ -30,7 +31,7 @@ export const SwitchCode = ({ topic, which }: { topic: string, which: number }) =
 
         {which === 2 ? (
             <>
-                <img src={ convert(topic) }
+                <img src={ convert(robotData.topic_camera_user) }
                 onError={() => {
                     if(cameraLoadedRef.current.minor !== false){
                         cameraLoadedRef.current.minor = false;}
@@ -42,16 +43,16 @@ export const SwitchCode = ({ topic, which }: { topic: string, which: number }) =
             </>
         ) : (null) }
 
+        {/* Adicionar método para reutilizar o mapa em diferentes tópicos em várias instâncias */}
         {which === 3 ? (
             <>
-                <RosapiMenu/>
+                <Map/>
             </>
         ) : (null) }
 
-        {/* Adicionar método para reutilizar o mapa em diferentes tópicos em várias instâncias */}
         {which === 4 ? (
             <>
-                <Map/>
+                <RosapiMenu/>
             </>
         ) : (null) }
         </>
